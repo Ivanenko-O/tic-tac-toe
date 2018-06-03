@@ -2,6 +2,9 @@ let origBoard;
 const aiPlayer = "0";
 const huPlayer = "X";
 let curPlayer = huPlayer;
+const cMode = document.getElementById('computer');
+const hMode = document.getElementById('human');
+console.log(hMode.checked);
 
 const winCombos = [
   [0, 1, 2],
@@ -27,7 +30,6 @@ startGame = () => {
     cells[i].style.removeProperty("background-color");
     cells[i].addEventListener("click", turnClick, false);
   }
-  console.log("start");
 };
 startGame();
 
@@ -40,39 +42,27 @@ function switchPlayer() {
 }
 
 function turnClick(event) {
-  // console.log(event);
-
-  // let player;
-
-  //     if(player == huPlayer) {
-  //         turn(event.target.id, huPlayer);
-  //         player = aiPlayer;
-  //         console.log(player);
-
-  //     }
-  //     else {
-  //          turn(event.target.id, aiPlayer);
-  //          player = huPlayer;
-  // }
-  console.log(curPlayer);
   turn(event.target.id, curPlayer);
-  switchPlayer();
+
+  console.log(hMode.checked);
+
+//   if(hMode.checked) {
+    switchPlayer();
+//   }
+  console.log(hMode.checked);
+
 }
 
 function turn(squareId, player) {
-  origBoard[squareId] = player;
-  document.getElementById(squareId).innerText = player;
 
-  var gameWon = checkWin2(origBoard, player);
+    if (!origBoard[squareId]) {
+        origBoard[squareId] = player;
+        document.getElementById(squareId).innerText = player;
 
-
-  if (gameWon) {
-      gameOver(gameWon);
-    // winCombos[gameWon.index].forEach(e => {
-        // document.getElementById(e).style.backgroundColor = "#f00";
-    // });
-  }
-  
+        let gameWon = checkWin2(origBoard, player);
+    
+        if (gameWon) gameOver(gameWon);
+    }
 }
 
 function checkWin(board, player) {
@@ -82,11 +72,7 @@ function checkWin(board, player) {
 
   let gameWon = null;
 
-  console.log(plays);
-
   for (let [index, win] of winCombos.entries()) {
-    // console.log({index,win});
-
     if (win.every(elem => plays.indexOf(elem) > -1)) {
       gameWon = { index: index, player: player };
       break;
@@ -104,8 +90,12 @@ function checkWin2(board, player) {
                 finish = false;
             }
         });
+
         if (finish) {
             gameWon = {index:ind, player: player};
+            let res = document.querySelector('.endGame');
+            res.style.display = 'block';
+            res.innerText = 'player ' + gameWon.player + ' is win';        
         }
         // if (comb.every(i => board[i] == player)) {
             // gameWon = {index:ind, player: player};
@@ -124,3 +114,7 @@ function gameOver(gameWon) {
     cells[i].removeEventListener("click", turnClick, false);
   }
 }
+
+
+
+
