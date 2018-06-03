@@ -2,9 +2,10 @@ let origBoard;
 const aiPlayer = "0";
 const huPlayer = "X";
 let curPlayer = huPlayer;
-const cMode = document.getElementById('computer');
-const hMode = document.getElementById('human');
-console.log(hMode.checked);
+const cModeBtn = document.getElementById('computer');
+const hModeBtn = document.getElementById('human');
+
+let vsComp = false;
 
 const winCombos = [
   [0, 1, 2],
@@ -33,6 +34,14 @@ startGame = () => {
 };
 startGame();
 
+function switchMode(e) {
+    if (e.id == hModeBtn.id){
+        cModeBtn.checked = false;
+    } else {
+        hModeBtn.checked = false;
+    }
+}
+
 function switchPlayer() {
   if (curPlayer == huPlayer) {
     curPlayer = aiPlayer;
@@ -42,15 +51,10 @@ function switchPlayer() {
 }
 
 function turnClick(event) {
-  turn(event.target.id, curPlayer);
 
-  console.log(hMode.checked);
-
-//   if(hMode.checked) {
+  if (turn(event.target.id, curPlayer) && hModeBtn.checked){
     switchPlayer();
-//   }
-  console.log(hMode.checked);
-
+  }
 }
 
 function turn(squareId, player) {
@@ -62,7 +66,9 @@ function turn(squareId, player) {
         let gameWon = checkWin2(origBoard, player);
     
         if (gameWon) gameOver(gameWon);
+        return true;
     }
+    return false;
 }
 
 function checkWin(board, player) {
