@@ -54,10 +54,9 @@ function turnClick(event) {
 
     if (turn(event.target.id, curPlayer) && hModeBtn.checked) {
         switchPlayer();
-    } 
-    // else if(!checkTie) {
-    //         turn(bestSpot(), aiPlayer);
-    // }
+    } else if(!checkTie()) {
+            turn(bestSpot(), aiPlayer);
+    }
 }
 
 function declareWinner(who) {
@@ -72,11 +71,13 @@ function emptySpot() {
 }
 
 function bestSpot() {
+    console.log(emptySpot);
+    
     return emptySpot()[0];
 }
 
 function checkTie() {
-    if (emptySpot.length === 0) {
+    if (emptySpot().length === 0) {
         for( let i=0; i<cells.length; i++) {
             cells[i].style.backgroundColor = 'forestgreen';
             cells[i].removeEventListener('click', turnClick, false);
