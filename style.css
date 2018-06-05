@@ -8,6 +8,22 @@ td {
     font-style: italic;
 }
 
+.no {
+    cursor: not-allowed;
+    transition-delay: .4s;
+    transition-property: cursor;
+}
+
+/* tr:first-child td {
+    border-top: none;
+}
+tr:nth-child(2) td {
+    border-left: none;
+}
+tr:last-child {
+    border-bottom: none;
+} */
+
 .toogle {
     display: flex;
     width: 250px;
