@@ -34,6 +34,19 @@ startGame = () => {
 };
 startGame();
 
+function turnClick(event) {  
+console.log(typeof +origBoard[event.target.id]);
+
+    if(typeof origBoard[event.target.id] === 'number') {
+        if (turn(event.target.id, curPlayer) && hModeBtn.checked) {
+            switchPlayer();
+        } 
+        else if(!checkTie()) {
+                turn(bestSpot(), aiPlayer);
+        }
+    }
+}
+
 function switchMode(e) {
     if (e.id == hModeBtn.id){
         cModeBtn.checked = false;
@@ -50,32 +63,6 @@ function switchPlayer() {
   }
 }
 
-function turnClick(event) {
-
-    if (turn(event.target.id, curPlayer) && hModeBtn.checked) {
-        switchPlayer();
-    } else if(!checkTie()) {
-            turn(bestSpot(), aiPlayer);
-    }
-}
-
-function declareWinner(who) {
-    document.querySelector('.endGame').style.display = 'block';
-    document.querySelector('.endGame .text').innerText = who + ' is Win';
-}
-
-function emptySpot() {
-    return origBoard.filter(function(i){
-        return typeof i == 'number';
-    })
-}
-
-function bestSpot() {
-    console.log(emptySpot);
-    
-    return emptySpot()[0];
-}
-
 function checkTie() {
     if (emptySpot().length === 0) {
         for( let i=0; i<cells.length; i++) {
@@ -88,11 +75,18 @@ function checkTie() {
     return false;
 }
 
+function declareWinner(who) {
+    document.querySelector('.endGame').style.display = 'block';
+    document.querySelector('.endGame .text').innerText = who;
+}
+
 function turn(squareId, player) {
-    if (typeof origBoard[squareId] == 'number') {
+    console.log(typeof origBoard[squareId] );
+    
+    if (typeof origBoard[squareId] === 'number') {
         origBoard[squareId] = player;
         document.getElementById(squareId).innerText = player;
-        // document.getElementById(squareId).classList.add('no');
+        document.getElementById(squareId).classList.add('no');
 
         let gameWon = checkWin(origBoard, player);
     
@@ -111,8 +105,8 @@ function checkWin(board, player) {
 
     for (let [index, win] of winCombos.entries()) {
         if (win.every(elem => plays.indexOf(elem) > -1)) {
-        gameWon = { index: index, player: player };
-        break;
+            gameWon = { index: index, player: player };
+            break;  
         }
     }
     
@@ -128,7 +122,8 @@ function checkWin2(board, player) {
             if (board[i] != player) {
                 finish = false;
             }
-        });
+        }
+    );
 
         if (finish) {
             gameWon = {index:ind, player: player};
@@ -154,6 +149,69 @@ function gameOver(gameWon) {
     for (var i = 0; i < cells.length; i++) {
         cells[i].removeEventListener("click", turnClick, false);
     }
+}
+
+function emptySpot() {
+    return origBoard.filter(function(i){
+        return typeof i == 'number';
+    })
+}
+
+function bestSpot() {       
+    return minimax(origBoard, aiPlayer).index;
+}
+
+function minimax(newBoard, player) {
+
+    var avSpots = emptySpot(newBoard);
+    if(checkWin(newBoard, player)) {
+        return {score: -10};
+    } else if(checkWin(newBoard, aiPlayer)) {
+        return {score: 20};
+    } else if(avSpots.length === 0) {
+        return {score: 0};
+    }
+
+    var moves = [];
+
+    for(let i=0; i<avSpots.length; i++){
+        var move = {};
+        move.index = newBoard[avSpots[i]];
+        newBoard[avSpots[i]] = player;
+
+        if(player == aiPlayer) {
+            var result = minimax(newBoard, huPlayer);
+            move.score = result.score;
+        } else {
+            var result = minimax(newBoard, aiPlayer);
+            move.score = result.score;
+        }
+
+        newBoard[avSpots[i]] = move.index;
+
+        moves.push(move);
+    }
+
+    var bestMove;
+    if(player === aiPlayer) {
+        var bestScore = -10000;
+        for(i=0; i<moves.length; i++){
+            if(moves[i].score > bestScore) {
+                bestScore = moves[i].score;
+                bestMove = i;
+            }
+        }
+    } else {
+        var bestScore = 10000;
+        for(i=0; i<moves.length; i++){
+            if(moves[i].score < bestScore) {
+                bestScore = moves[i].score;
+                bestMove = i;
+            }
+        }
+    }
+
+    return moves[bestMove];
 }
 
 

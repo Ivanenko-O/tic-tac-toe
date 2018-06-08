@@ -10,7 +10,7 @@
 </head>
 <body>
     
-    <table>
+    <table cellspacing='0' cellpadding='0'>
         <tr>
             <td class="cell" id="0"></td>
             <td class="cell" id="1"></td>
@@ -32,9 +32,7 @@
         <div class="text"></div>
     </div>
 
-
-    <button onclick="startGame()">Replay</button>
-
+    <p class="title">type of game</p>
     <div class="toogle">
         <input type='checkbox' id="human" onclick="switchMode(this)">
         <label for="human">play human</label>
@@ -43,6 +41,7 @@
         <label for="computer">play computer</label>
     </div>
 
+    <button onclick="startGame()" class="newGame">New Game</button>
 
     <script src="script.js"></script>
 </body>
